@@ -257,7 +257,7 @@ int main() {
             merge = (*sd).mergeSort(elements);
             (*sd).displayVector(merge);
         }
-        cout << "=======================" << line << endl;
+        cout << "=======================" << endl;
         cin.getline(line, 10);
     }
 }
