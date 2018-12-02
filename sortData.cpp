@@ -242,19 +242,31 @@ int main() {
 
         if (line[0] == 'B') {
             cout << "Bubble: " << endl;
+            auto start = chrono::system_clock::now();
             bubble = (*sd).bubbleSort(elements);
+            auto end = chrono::system_clock::now();
+            chrono::duration<double> elapsed_time = end-start;
+            cout << "Elapsed Time: " << elapsed_time.count() << endl;
             (*sd).displayVector(bubble);
         }
 
         if (line[0] == 'Q') {
             cout << "Quick: " << endl;
+            auto start = chrono::system_clock::now();
             quick = (*sd).quickSort(elements);
+            auto end = chrono::system_clock::now();
+            chrono::duration<double> elapsed_time = end-start;
+            cout << "Elapsed Time: " << elapsed_time.count() << endl;
             (*sd).displayVector(quick);
         }
-
+        
         if (line[0] == 'M') {
             cout << "Merge: " << endl;
+            auto start = chrono::system_clock::now();
             merge = (*sd).mergeSort(elements);
+            auto end = chrono::system_clock::now();
+            chrono::duration<double> elapsed_time = end-start;
+            cout << "Elapsed Time: " << elapsed_time.count() << endl;
             (*sd).displayVector(merge);
         }
         cout << "=======================" << endl;
