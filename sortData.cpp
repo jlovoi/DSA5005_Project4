@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <string>
 
 using namespace std;
 
@@ -25,8 +27,8 @@ public:
     void quickSort(vector<int> &vect, int start, int end);
     int partition(vector<int> &vect, int index, int pivot);
     vector<int> mergeSort(vector<int> elements);
-    void mergeSort(vector<int> &vect, int start, int end);
-    void merge(vector<int> &vect, int start, int mid, int end);
+    void mergeSort(int *arr, int start, int end);
+    void merge(int *arr, int start, int mid, int end);
     void displayVector(vector<int> sortedElements);
     ~sortData();
 };
@@ -111,93 +113,155 @@ int sortData::partition(vector<int> &vect, int index, int pivot) {
         // increment looping iterator
         loop++;
     }
-    cout << endl;
     // return the new partition index (part)
     return index;
 }
 
 vector<int> sortData::mergeSort(vector<int> elements) {
     // vector to return
-    vector<int> ret = elements;
+    vector<int> ret;
+    int arr[N];
+    int i = 0;
     
+    // Store the vector in an array
+    for (vector<int>::iterator it = elements.begin(); it != elements.end(); it++) {
+        arr[i] = *it;
+        i++;
+    }
     // start recursion
-    mergeSort(ret, 0, int(ret.size())-1);
+    mergeSort(arr, 0, N-1);
+    
+    // Store array into return vector
+    for (int i = 0; i < N; i++) {
+        ret.push_back(arr[i]);
+    }
     
     return ret;
 }
 
-void sortData::mergeSort(vector<int> &vect, int start, int end) {
+void sortData::mergeSort(int *arr, int start, int end) {
     if (start < end) {
         // get middle index
         int mid = (start + end) / 2;
         
         // Recursively call mergsort until we can no longer split vectors in half
-        mergeSort(vect, start, mid);
-        mergeSort(vect, mid+1, end);
+        mergeSort(arr, start, mid);
+        mergeSort(arr, mid+1, end);
         
-        merge(vect, start, mid, end);
+        //cout << "calling merge for " << arr[start] << " at " << start << " " << arr[end] << " at " << end << endl;
+        cout << "HERE" << endl;
+        merge(arr, start, mid, end);
+//        for (int i = 0; i < N; i++) {
+//            cout << arr[i] << " ";
+//        }
+//        cout << endl << endl;;
     }
 }
 
-void sortData::merge(vector<int> &vect, int start, int mid, int end) {
-    // split the vector in half, store in two temporary vectors
-    vector<int> temp1;
-    for (int i = start; i < mid; i++) {
-        temp1.push_back(vect[i]);
-    }
-    vector<int> temp2;
-    for (int i = mid; i < end; i++) {
-        temp2.push_back(vect[i]);
-    }
-    cout << "start: " << start << " mid: " << mid << " end: " << end << endl;
-    cout << "temp1: ";
-    for (int x : temp1) {
-        cout << x << " ";
-    }
-    cout << endl << "temp2: ";
-    for (int x : temp2) {
-        cout << x << " ";
-    }
-    cout << endl;
-    // iterators for these two vectors:
-    int t1 = 0;
-    int t2 = 0;
-    // iterator for the index of the main vector
-    int it = start;
-    // merge the elements in order
-    while (t1 < temp1.size() && t2 < temp2.size()) {
-        cout << "it: " << it << endl;
-        if (temp1[t1] <= temp2[t2]) {
-            vect[it] = temp1[t1];
-            t1++;
+void sortData::merge(int *arr, int start, int mid, int end) {
+    int i = start;
+    int k = start;
+    int j = mid + 1;
+    int temp[end-start+1];
+    
+    while (i <= mid && j <= end) {
+        if (arr[i] < arr[j]) {
+            temp[k] = arr[i];
+            i++;
         }
         else {
-            vect[it] = temp2[t2];
-            t2++;
+            temp[k] = arr[j];
+            j++;
         }
-        it++;
+        k++;
     }
     
-    // add leftover elements that werent added before
-    while (t1 < temp1.size()) {
-        vect[it] = temp1[t1];
-        t1++;
-        it++;
+    if (i > mid) {
+        for (int it = j; it <= end; it++) {
+            temp[k] = arr[it];
+            k++;
+        }
     }
-    while (t2 < temp2.size()) {
-        vect[it] = temp2[t2];
-        t2++;
-        it++;
+    else{
+        for (int it = i; it <= mid; it++) {
+            temp[k] = arr[it];
+            k++;
+        }
+    }
+    
+    for (int it = start; it <= end; it++) {
+        arr[it] = temp[it];
+    }
+}
+
+void sortData::displayVector(vector<int> sortedElements) {
+    int i = 0;
+    cout << "Printing sorted elements: " << endl;
+    for (auto it = sortedElements.begin(); it != sortedElements.end(); it++) {
+        if (i % 25 == 0) {
+            cout << endl;
+        }
+        
+        cout << *it << " ";
+        i++;
     }
     cout << endl;
 }
 
+
 int main() {
-    vector<int> elements {5, 3 ,1, 2, 4, 7, 13, 55, 63, 45 ,76, 9, 10};
-    sortData *sd = new sortData(5);
-    vector<int> merge = (*sd).mergeSort(elements);
-    for (int x : merge) {
-        cout << x << " ";
+    
+    
+    
+    
+    sortData *sd = nullptr;
+    char line[10];
+    vector<int> elements;
+    vector<int> bubble;
+    vector<int> quick;
+    vector<int> merge;
+    cin.getline(line, 10);
+    while (!cin.eof()) {
+        if (line[0] == '\r') {
+            cin.getline(line, 10);
+            continue;
+        }
+        if (line[0] == 'C') {
+            elements.clear();
+        }
+        
+        if (line[0] == 'N') {
+            line[0] = ' ';
+            int num = stoi(line);
+            sd = new sortData(stoi(line));
+            cin.getline(line,10); // blank
+            cin.getline(line,10);
+            
+            for (int i = 0; i < num; i++) {
+//                cout << " Adding: " << line << endl;
+                elements.push_back(stoi(line));
+                cin.getline(line, 10);
+            }
+        }
+        
+        if (line[0] == 'B') {
+            cout << "Bubble: " << endl;
+            bubble = (*sd).bubbleSort(elements);
+            (*sd).displayVector(bubble);
+        }
+
+        if (line[0] == 'Q') {
+            cout << "Quick: " << endl;
+            quick = (*sd).quickSort(elements);
+            (*sd).displayVector(quick);
+        }
+        
+        if (line[0] == 'M') {
+            cout << "Merge: " << endl;
+            merge = (*sd).mergeSort(elements);
+            (*sd).displayVector(merge);
+        }
+        cout << "=======================" << line << endl;
+        cin.getline(line, 10);
     }
-    return 0;
 }
