@@ -149,7 +149,6 @@ void sortData::mergeSort(int *arr, int start, int end) {
         mergeSort(arr, mid+1, end);
         
         //cout << "calling merge for " << arr[start] << " at " << start << " " << arr[end] << " at " << end << endl;
-        cout << "HERE" << endl;
         merge(arr, start, mid, end);
 //        for (int i = 0; i < N; i++) {
 //            cout << arr[i] << " ";
@@ -162,7 +161,7 @@ void sortData::merge(int *arr, int start, int mid, int end) {
     int i = start;
     int k = start;
     int j = mid + 1;
-    int temp[end-start+1];
+    int temp[end];
     
     while (i <= mid && j <= end) {
         if (arr[i] < arr[j]) {
@@ -211,9 +210,6 @@ void sortData::displayVector(vector<int> sortedElements) {
 
 int main() {
     
-    
-    
-    
     sortData *sd = nullptr;
     char line[10];
     vector<int> elements;
@@ -229,21 +225,21 @@ int main() {
         if (line[0] == 'C') {
             elements.clear();
         }
-        
+
         if (line[0] == 'N') {
             line[0] = ' ';
             int num = stoi(line);
             sd = new sortData(stoi(line));
             cin.getline(line,10); // blank
             cin.getline(line,10);
-            
+
             for (int i = 0; i < num; i++) {
 //                cout << " Adding: " << line << endl;
                 elements.push_back(stoi(line));
                 cin.getline(line, 10);
             }
         }
-        
+
         if (line[0] == 'B') {
             cout << "Bubble: " << endl;
             bubble = (*sd).bubbleSort(elements);
@@ -255,7 +251,7 @@ int main() {
             quick = (*sd).quickSort(elements);
             (*sd).displayVector(quick);
         }
-        
+
         if (line[0] == 'M') {
             cout << "Merge: " << endl;
             merge = (*sd).mergeSort(elements);
